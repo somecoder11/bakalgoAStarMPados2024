@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <style>
+    .borderdiv {
+      display: inline-block;
+      width: 700px;
+      margin: 0 auto;
+      border: 8px solid black;
+      padding: 20px;
+      margin-bottom: 10px;
+    }
+
+    .selectiondiv {
+      display: block;
+      margin: 0 auto;
+      /* border: 8px solid black; */
+      /* padding: 20px; */
+      margin-bottom: 10px
+    }
+
+    .highlightorange {
+      color: orange;
+    }
+
+    .highlightgreen {
+      color: green;
+    }
+
+    .highlightgray {
+      color: gray;
+    }
+    
+    .highlightdarkorange {
+      color: darkorange;
+    }
+
+    #translation-direction {
+      height: 25px;
+
+    }
+
+    #input-label1,
+    #input-label2,
+    #input-label3 {
+      margin: 10px;
+      padding-top: 20px;
+    }
+
+    #output-label1,
+    #output-label2,
+    #output-label3 {
+      margin: 10px;
+      padding-bottom: 20px;
+    }
+
+    .content {
+      padding-top: 20px;
+      text-align: left;
+      font-size: 20pt;
+    }
+
+
+    #content2,
+    #content3 {
+      display: none;
+    }
+
+    #input-content1,
+    #input-content2,
+    #input-content3 {
+      letter-spacing: 10px;
+      font-family: monospace;
+      margin: 10px;
+      padding-left: 20px;
+      padding-top: 20px;
+    }
+
+    #output-content1,
+    #output-content2,
+    #output-content3 {
+      letter-spacing: 10px;
+      font-family: monospace;
+      padding-left: 20px;
+      padding-bottom: 20px;
+    }
+
+    #input-indicator {
+      margin: 10px;
+      padding-left: 20px;
+      padding-top: 20px;
+    }
+
+    #container {
+      width: 95%;
+      text-align: center;
+      margin: 30px auto;
+    }
+
+    #controls {
+      display: inline-block;
+      margin: 0 auto;
+      padding: 10px;
+    }
+
+    #canvas1,
+    #canvas2 {
+      margin: 0 auto;
+      overflow: auto;
+    }
+
+    .control-div {
+      display: flex;
+      align-items: center;
+      /*margin-bottom: 10px;*/
+      float: left;
+      margin-right: 8px;
+      border-radius: 8px;
+      height: 40px;
+      width: 40px;
+      background-color: #87AECF;
+    }
+
+    .control-div:hover {
+      background-color: #4480b3;
+    }
+
+    .control {
+      height: 25px;
+      width: 25px;
+      margin: 0 auto;
+    }
+
+    .unselectable {
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .wide_control {
+      width: 70px;
+      height: 48px;
+      white-space: normal;
+    }
+
+    .plus_minus_control {
+      width: 30px;
+      height: 24px;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .plusminus {
+      margin: auto;
+    }
+
+    .selection-button {
+      height: 50px;
+      width: 320px;
+      white-space: normal;
+      margin: 5px;
+      padding: 0 auto;
+      background-color: #87AECF;
+      border-radius: 10px;
+      border: none;
+      font-size: 18pt;
+      font-weight: bold;
+    }
+
+    .selection-button-activated {
+      background-color: #4480b3 !important;
+    }
+
+    .selection-button:hover {
+      background-color: #4480b3;
+    }
+
+
+    #input {
+      margin: 0 auto;
+      /* margin-bottom: 50px; */
+
+    }
+
+    #footer {
+      margin: 0 auto;
+      padding: 5px;
+    }
+    
+    #algo_title {
+      text-align: center;
+    }
+
+    #algo,
+    #info,
+    #program_title {
+      text-align: left;
+      font: 16pt JosefinSlab;
+    }
+
+    #algo_translation_expand,
+    #algo_presuccessor_expand,
+    #algo_table_expand {
+      text-align: left;
+      font: 16pt JosefinSlab;
+      margin: auto;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s;
+    }
+
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    input[type="checkbox"]+label:hover {
+      color: #555555;
+    }
+
+    input[type="checkbox"]+label:before {
+      content: "\25E5";
+      margin-right: 10px;
+    }
+
+    input[type="checkbox"]:checked+label:before {
+      content: "\25E2";
+      margin-right: 10px;
+    }
+
+    ul {
+      list-style-type: none;
+      color: black;
+    }
+
+    table {
+      margin-left: 30px;
+    }
+
+    body {
+      margin: 0 auto;
+    }
+
+    /* slider styling from http://danielstern.ca/range.css/?ref=css-tricks#/ */
+    input[type=range] {
+      appearance: inherit;
+      -webkit-appearance: none;
+      width: 100%;
+      margin: 4.8px 0;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: #3071a9;
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -5px;
+    }
+
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      background: #367ebd;
+    }
+
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: #3071a9;
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+
+    input[type=range]::-moz-range-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    input[type=range]::-ms-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+
+    input[type=range]::-ms-fill-lower {
+      background: #2a6495;
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+
+    input[type=range]::-ms-fill-upper {
+      background: #3071a9;
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+
+    input[type=range]::-ms-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px marltinqborzwan#0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+      height: 8.4px;
+    }
+
+    input[type=range]:focus::-ms-fill-lower {
+      background: #3071a9;
+    }
+
+    input[type=range]:focus::-ms-fill-upper {
+      background: #367ebd;
+    }
+  </style>
+</head>
+
+<body>
+  <div id=container>
+    <div class="borderdiv" id="main-window">
+      <div class="selectiondiv" id="selection">
+        <input class="selection-button selection-button-activated" id="btn1" type="button"
+          onclick="grayCodes.changeMode(this)" value="Binary &hArr; Gray code">
+        <input class="selection-button" id="btn2" type="button" onclick="grayCodes.changeMode(this)" value="Previous/Next Gray code">
+      </div>
+      <div id="program_expand">
+        <div id="controls">
+          <div title="run algorithm" class="control-div" onclick="grayCodes.runAlgorithm()"><img
+              class="control unselectable" id="run" src="res/Play.png"></div>
+          <div title="pause algorithm" class="control-div" onclick="grayCodes.pauseAlgorithm()"><img
+              class="control unselectable" id="pause" src="res/Pause.png"></div>
+          <div title="step backward" class="control-div" onclick="grayCodes.stepBackward()"><img
+              class="control unselectable" id="back" src="res/StepBwd.png"></div>
+          <div title="step forward" class="control-div" onclick="grayCodes.stepForward()"><img
+              class="control unselectable" id="step" src="res/StepFwd.png"></div>
+          <div title="go to beginning" class="control-div" onclick="grayCodes.goToBeginning()"><img
+              class="control unselectable" id="start" src="res/Start.png"></div>
+          <div title="go to end" class="control-div" onclick="grayCodes.goToEnd()"><img class="control unselectable"
+              id="end" src="res/Finish.png"></div>
+          <div title="clear input" class="control-div" onclick="grayCodes.clearInput()"><img
+              class="control unselectable" id="clear" src="res/Clear.png"></div>
+        </div>
+        <table id="input" class="unselectable">
+          <tr>
+            <td align="left">Run Speed: </td>
+            <td colspan=4><input id="speed" type="range" min="0" max="10" step="1"
+                oninput="grayCodes.updateSpeed(this.value)" onchange="grayCodes.updateSpeed(this.value)" /></td>
+          </tr>
+          <tr>
+            <td align="left">Input: </td>
+            <td><input id="inputfield" type="text" name="input" onkeypress="grayCodes.restrictKeyPress(event)"
+                oninput="grayCodes.updateInputContent()" onpaste="grayCodes.onPaste(this)"
+                onblur="grayCodes.onBlur(this)"></td>
+            <td>
+              <table class="unselectable plusminus">
+                <tr><input class="plus_minus_control" type="button" style="display:block" onclick="grayCodes.incrementInput()"
+                  value="+"></tr>
+                  
+                <tr><input class="plus_minus_control" type="button" style="display:block" onclick="grayCodes.decrementInput()"
+                  value="-"></tr>
+              </table>   
+            </td>
+            <td rowspan="2"><input class="wide_control" type="button" onclick="grayCodes.randomNumber()"
+                value="random input"></td>
+            <td rowspan="2"><input class="wide_control" type="button" onclick="grayCodes.changeDirection()"
+                value="change direction"></td>
+          </tr>
+        </table>
+        <table id="content1" class="content unselectable">
+          <tr>
+            <td id="input-label1" width="150"></td>
+            <td id="input-content1"></td>
+          </tr>
+          <tr>
+            <td colspan="2"> <canvas id="canvas1" height="55"></canvas></td>
+          </tr>
+          <tr>
+            <td id="output-label1" width="150"></td>
+            <td id="output-content1"></td>
+          </tr>
+        </table>
+        <table id="content2" class="content unselectable">
+          <tr>
+            <td id="input-label2" width="150"></td>
+            <td id="input-content2"></td>
+            <td id="input-indicator"></td>
+          </tr>
+          <tr>
+            <td colspan="3"> <canvas id="canvas2" height="55"></canvas></td>
+          </tr>
+          <tr>
+            <td id="output-label2" width="150"></td>
+            <td id="output-content2"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <br>
+    <div class="borderdiv" id="algo">
+      <div id="algo_title">
+        <p><b>THE ALGORITHMS</b></p>
+      </div>
+      <div id="algo_expand" class="unselectable">
+        <div id="algo_translation">
+          <div>
+            <p><input id="algo_translation_toggle" type="checkbox"
+                onclick="toggleExpand(this, 'algo_translation_expand')">
+              <label for="algo_translation_toggle" id="algo_translation_title"><b>[PSEUDOCODE] Binary &hArr; Gray code</b></label>
+            </p>
+          </div>
+          <div id="algo_translation_expand">
+            <blockquote id="fill_block">
+              <pre>
+
+b<sub>n-1</sub> b<sub>n-2</sub> ... b<sub>1</sub> b<sub>0</sub>     &hArr;   g<sub>n-1</sub> g<sub>n-2</sub> ... g<sub>1</sub> g<sub>0</sub>
+
+
+                   b<sub>n-1</sub> = g<sub>n-1</sub>
+
+
+              &forall;0 &le; i &lt; n-1:
+
+                  b<sub>i</sub> = b<sub>i+1</sub> XOR g<sub>i</sub>
+
+                  g<sub>i</sub> = b<sub>i+1</sub> XOR b<sub>i</sub>
+
+</pre>
+            </blockquote>
+          </div>
+        </div>
+        <div id="algo_presuccessor">
+          <div>
+            <p><input id="algo_presuccessor_toggle" type="checkbox"
+                onclick="toggleExpand(this, 'algo_presuccessor_expand')">
+              <label for="algo_presuccessor_toggle" id="algo_presuccessor_title"><b>[PSEUDOCODE]
+                Previous/Next Gray code:</b></label>
+            </p>
+          </div>
+          <div id="algo_presuccessor_expand">
+            <blockquote id="fill_block">
+              <pre>
+func nextGray(g):
+  if (#1(g) is even) then flip g[0];
+  else
+    r &xlarr; index of rightmost "1" of g
+    if (r < n-1) then flip g[r+1]; else flip g[r]; fi
+  fi
+  return (g)
+
+func previousGray(g):
+  if (#1(g) is odd) then flip g[0];
+  else
+    if (#1(g) > 0) then  
+      r &xlarr; index of rightmost "1" of g;
+      flip g[r+1];
+    else flip g[n-1]; fi
+  fi
+  return (g)
+</pre>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

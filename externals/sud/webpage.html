@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+    <!-- <link rel="stylesheet" href="externals/sud/style.css"> -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: rgb(31 41 55);
+            font-size: 1rem;
+        }
+
+        .theme1 {
+            --background-color: #C5CFD6;
+            --border-color: #000000;
+            --fix-square-color: #8b5cf6;
+            --backtracking-color: blue;
+            --backtracking-background-color: rgb(147 197 253);
+            --success-color: green;
+            --success-background-color: #dcfce7;
+            --error-color: red;
+            --error-background-color: #fee2e2;
+            --button-background-color: #87AECF;
+            --button-hover-background-color: #4480b3;
+            --sudoku-border-color: rgb(31 41 55);
+            --first-solution-color: #f97316;
+            --main-font: serif;
+            --marker-text-hover-background-color: #b9c8d3;
+
+            --border-size: 8px;
+            --inner-border-size: 4px;
+            --sudoku-board-margin-top: 1rem;
+            --floating-button-border-color: #486e8f;
+            --floating-button-hover-background-color: #b9c8d3;
+            --floating-button-fill: #093c66;
+        }
+
+        .theme2 {
+            --background-color: #fff;
+            --border-color: rgb(209 213 219);
+            --fix-square-color: #8b5cf6;
+            --backtracking-color: #3b82f6;
+            --backtracking-background-color: rgb(147 197 253);
+            --success-color: #22c55e;
+            --success-background-color: #dcfce7;
+            --error-color: #ef4444;
+            --error-background-color: #fee2e2;
+            --button-background-color: rgb(243 244 246);
+            --button-hover-background-color: rgb(209 213 219);
+            --sudoku-border-color: rgb(31 41 55);
+            --first-solution-color: #f97316;
+            --main-font: 'Open Sans', sans-serif;
+            --marker-text-hover-background-color: #f3f4f6;
+
+            --border-size: 1px;
+            --inner-border-size: 1px;
+            --sudoku-board-margin-top: 0;
+            --floating-button-border-color: rgb(209 213 219);
+            --floating-button-hover-background-color: rgb(243 244 246);
+            --floating-button-fill: #000;
+        }
+
+        body {
+            /* overflow: hidden; */
+            height: 100%;
+            background-color: var(--background-color);
+            font-family: var(--main-font);
+        }
+
+        main.sud {
+            background-color: var(--background-color);
+            width: 100%;
+            /* max-height: calc(100vh - 75px); */
+            height: 100%;
+
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .sud.container {
+            border: var(--border-size) solid var(--border-color);
+
+            width: fit-content;
+            height: 100%;
+            /* overflow: hidden; */
+
+            display: flex;
+        }
+
+        .algorithm {
+            width: 700px;
+            padding: 2rem;
+        }
+
+        .algorithm>h2 {
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .algorithm>h3 {
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .algorithm>h3>svg {
+            height: 24px;
+            width: 24xp;
+            transform-origin: center;
+        }
+
+        .algorithm>h3:hover {
+            color: rgb(56, 56, 56);
+        }
+
+        .sud.left {
+            /* width: 60%; */
+
+            /* overflow: auto; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sud.right {
+            /* width: 40%; */
+            border-left: var(--inner-border-size) solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            /* overflow: auto; */
+        }
+
+        .sud.status {
+            width: 100%;
+            border-bottom: var(--inner-border-size) solid var(--border-color);
+            padding: 0.25rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sud.status-bottom {
+            width: 100%;
+            border-top: var(--inner-border-size) solid var(--border-color);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .sud.output {
+            height: 500px;
+            border-bottom: 1px solid var(--border-color);
+
+            padding: 1rem;
+            overflow: auto;
+            display: none;
+        }
+
+        #sud-status-backtracking-no {
+            color: var(--fix-square-color);
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        #sud-status-backtracking-yes {
+            color: var(--backtracking-color);
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        #sud-status-backtracking-jein {
+            color: var(--fix-square-color);
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        #sud-status-backtracking-yes-and {
+            color: var(--backtracking-color);
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+        }
+
+        #sud-status {
+            cursor: pointer;
+        }
+
+
+
+        .sud.game {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            flex-grow: 1;
+            gap: 2rem;
+            padding: 0 2rem;
+            margin-top: var(--sudoku-board-margin-top);
+        }
+
+
+        .sud.groups {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            height: 100%;
+            justify-content: space-around;
+        }
+
+        .sud.group {
+            width: 100%;
+        }
+
+
+        .solvable-text {
+            color: var(--success-color);
+            background-color: var(--success-background-color);
+            font-weight: bold;
+            padding: 0 0.25rem;
+        }
+
+        .not-solvable-text {
+            color: var(--error-color);
+            background-color: var(--error-background-color);
+            font-weight: bold;
+            padding: 0 0.25rem;
+        }
+
+
+
+
+        .sud.controls {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            gap: 1rem;
+            padding-top: 1rem;
+        }
+
+        .sud.buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sud.range {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            width: 100%;
+        }
+
+
+        button.sud {
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            height: 40px;
+            width: 40px;
+            background-color: var(--button-background-color);
+            cursor: pointer;
+        }
+
+        button.sud:hover {
+            background-color: var(--button-hover-background-color);
+        }
+
+        button.sud>img {
+            height: 25px;
+            width: 25px;
+        }
+
+
+        #sud-sudoku-input {
+            width: 400px;
+            height: 400px;
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            padding: 3px;
+            background-color: var(--sudoku-border-color);
+            margin-bottom: 1rem;
+        }
+
+
+        #sud-sudoku {
+            width: 400px;
+            height: 400px;
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            padding: 3px;
+            background-color: var(--sudoku-border-color);
+            margin-bottom: 1rem;
+        }
+
+        .sud-sudoku-block {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+        }
+
+        .sud-sudoku-field {
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-color);
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .sud-sudoku-field-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-size: 1.8rem;
+            background-color: var(--background-color);
+            font-family: var(--main-font);
+        }
+
+        .sud-sudoku-field-input-output {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            text-align: center;
+            font-size: 1.8rem;
+            background-color: var(--background-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sud-sudoku-number {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 0;
+        }
+
+
+
+
+
+
+        table {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-collapse: collapse;
+
+        }
+
+        th {
+            border: 1px solid var(--border-color);
+            text-align: center;
+            padding-left: 0;
+            line-height: 1.25rem;
+        }
+
+
+        td:nth-child(1) {
+            font-weight: bold;
+        }
+
+        td {
+            border: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.15rem;
+        }
+
+        .unselectable {
+            user-select: none;
+            /* Standard property */
+            -moz-user-select: none;
+            /* Firefox */
+            -webkit-user-drag: none;
+            /* Safari and older Chrome versions */
+            -webkit-user-select: none;
+            /* Older Safari versions */
+            -ms-user-select: none;
+            /* Internet Explorer/Edge */
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        .theme2 input[type="range"] {
+            /* removing default appearance */
+            -webkit-appearance: none;
+            appearance: none;
+            /* creating a custom design */
+            width: 100%;
+            cursor: pointer;
+            outline: none;
+            border-radius: 15px;
+            /*  overflow: hidden;  remove this line*/
+
+            /* New additions */
+            height: 6px;
+            background: rgb(209 213 219);
+        }
+
+        /* Thumb: webkit */
+        .theme2 input[type="range"]::-webkit-slider-thumb {
+            /* removing default appearance */
+            -webkit-appearance: none;
+            appearance: none;
+            /* creating a custom design */
+            height: 15px;
+            width: 15px;
+            background-color: rgb(31 41 55);
+            border-radius: 50%;
+            border: none;
+
+            /* box-shadow: -407px 0 0 400px #f50; emove this line */
+            transition: .2s ease-in-out;
+        }
+
+        /* Thumb: Firefox */
+        .theme2 input[type="range"]::-moz-range-thumb {
+            height: 15px;
+            width: 15px;
+            background-color: rgb(31 41 55);
+            border-radius: 50%;
+            border: none;
+
+            /* box-shadow: -407px 0 0 400px #f50; emove this line */
+            transition: .2s ease-in-out;
+        }
+
+        /* Hover, active & focus Thumb: Webkit */
+
+        .theme2 input[type="range"]::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 10px rgba(31, 41, 55, .1);
+        }
+
+        .theme2 input[type="range"]:active::-webkit-slider-thumb {
+            box-shadow: 0 0 0 13px rgba(31, 41, 55, .2);
+        }
+
+        .theme2 input[type="range"]:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 13px rgba(31, 41, 55, .2);
+        }
+
+        /* Hover, active & focus Thumb: Firfox */
+
+        .theme2 input[type="range"]::-moz-range-thumb:hover {
+            box-shadow: 0 0 0 10px rgba(31, 41, 55, .1);
+        }
+
+        .theme2 input[type="range"]:active::-moz-range-thumb {
+            box-shadow: 0 0 0 13px rgba(31, 41, 55, .2);
+        }
+
+        .theme2 input[type="range"]:focus::-moz-range-thumb {
+            box-shadow: 0 0 0 13px rgba(31, 41, 55, .2);
+        }
+
+        .sud.disabled {
+            cursor: not-allowed;
+            opacity: 10%;
+        }
+
+        .sud.disabled:hover {
+            background-color: inherit;
+        }
+
+        .sud.expert {
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .sud.expert-text {
+            color: rgb(156 163 175);
+        }
+
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .slider {
+            width: 100%;
+        }
+
+        .markers {
+            position: absolute;
+            width: 100%;
+            top: 14px;
+            /* Adjust as needed */
+        }
+
+        .marker {
+            position: absolute;
+            height: 15px;
+            width: 4px;
+            /* background-color: rgb(31 41 55); */
+            top: 0;
+            bottom: 0;
+            margin-top: auto;
+            margin-bottom: auto;
+
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        #markerTexts {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .markerText {
+            cursor: pointer;
+            /* border: 1px solid rgb(209 213 219); */
+            padding: 0 0.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .markerInner {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+
+
+        /* 
+#markerBacktracking {
+    background-color: var(--backtracking-color);
+    display: none;
+}
+
+#markerFirstSolution {
+    background-color: var(--first-solution-color);
+    display: none;
+}
+
+#markerTextBacktracking {
+    color: var(--background-color);
+    border-color: var(--backtracking-background-color);
+    display: none;
+} */
+
+
+
+        #endTextMarkerRed {
+            color: var(--error-color);
+            /* border-color: rgb(252 165 165); */
+            display: none;
+        }
+
+
+        .inline {
+            display: inline-block;
+            position: relative;
+        }
+
+        .inline .randomizer {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            z-index: 99999;
+            background-color: white;
+            transform: translateX(calc(-50% + 20px));
+            border: 1px solid rgb(243 244 246);
+            flex-direction: column;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        .inline:hover .randomizer {
+            display: flex;
+        }
+
+        .inline .randomizer>button {
+            border: none;
+            padding: 0.5rem 1rem;
+            background-color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .inline .randomizer>button:first-child {
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .inline .randomizer>button:last-child {
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        .inline .randomizer>button:hover {
+            background-color: rgb(243 244 246);
+        }
+
+        .lds-dual-ring {
+            display: flex;
+            justify-items: center;
+            align-items: center;
+            width: 16px;
+            height: 16px;
+        }
+
+        .lds-dual-ring:after {
+            content: " ";
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 3px solid rgb(31 41 55);
+            border-color: rgb(31 41 55) transparent rgb(31 41 55) transparent;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .analyzing {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        #analyzing-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #newMarkerLabels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #newMarkerLabels>div {
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        #newMarkerLabels>div:hover {
+            background-color: var(--marker-text-hover-background-color);
+        }
+
+        #newMarkerLabels .newMarkerLabel {
+            font-weight: bold;
+        }
+
+        #newMarkerLabels .newMarkerCircle {
+            height: 6px;
+            width: 6px;
+            border-radius: 9999px;
+            transition-property: height;
+            transition-duration: 150ms;
+        }
+
+        #newMarkerLabels * {
+            font-size: 0.85rem;
+        }
+
+        #newMarkers {
+            z-index: 10;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .newMarker {
+            position: absolute;
+            height: 6px;
+            width: 15px;
+            border-radius: 9999px;
+            transition-property: height;
+            transition-duration: 150ms;
+            transform: translateY(8px);
+            cursor: pointer;
+            z-index: -1;
+        }
+
+        .theme1 .newMarker {
+            margin-top: 1rem;
+        }
+
+        #storageBtn {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            border: 1px solid var(--floating-button-border-color);
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--background-color);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        #storageBtn:hover {
+            background-color: var(--floating-button-hover-background-color);
+        }
+
+        #storageBtn>svg {
+            height: 1rem;
+            width: 1rem;
+            fill: var(--floating-button-fill);
+        }
+
+        #storage {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 99999;
+            background-color: #fff;
+            width: 300px;
+            display: none;
+            flex-direction: column;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .storageHeader {
+            padding: 1rem;
+            border-bottom: 1px solid rgb(209 213 219);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .storageHeader>h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .storageHeader>div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #storageClose {
+            width: 1rem;
+            height: 1rem;
+            cursor: pointer;
+            opacity: 0.25;
+        }
+
+        #storageClose:hover {
+            opacity: 1;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 99998;
+            display: none;
+        }
+
+        .storageEntry {
+            width: 100%;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .storageContent {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .storageIcons {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+        }
+
+        .storageIcons>svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            opacity: 0.25;
+        }
+
+        .storageIcons>svg:hover {
+            opacity: 1;
+        }
+
+        #storageEntries {
+            overflow-y: auto;
+        }
+
+        .storageEntry:hover {
+            background-color: rgb(243 244 246);
+        }
+
+        .storageEntryTitle {
+            font-weight: bold;
+        }
+
+        .storageEntryDateTime {
+            font-size: 0.85rem;
+        }
+
+        #storageAddBtn {
+            background-color: transparent;
+            border: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgb(209 213 219);
+            font-weight: bold;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        #storageAddBtn:hover {
+            background-color: rgb(243 244 246);
+        }
+
+        #themeBtn {
+            background-color: transparent;
+            border: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgb(209 213 219);
+            font-weight: bold;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #themeBtn:hover {
+            background-color: rgb(243 244 246);
+        }
+
+        .storageControls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .storageBottomControls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            margin-top: auto;
+            border-top: 1px solid rgb(209 213 219);
+        }
+
+        #storageAddBtn>svg {
+            height: 2rem;
+            width: 2rem;
+        }
+
+        .simpleBacktrackingModeText {
+            font-family: monospace;
+        }
+
+
+
+
+        /* slider styling from http://danielstern.ca/range.css/?ref=css-tricks#/ */
+        .theme1 input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            margin: 4.8px 0;
+        }
+
+        .theme1 input[type=range]:focus {
+            outline: none;
+        }
+
+        .theme1 input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            background: #3071a9;
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        .theme1 input[type=range]::-webkit-slider-thumb {
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 18px;
+            width: 18px;
+            border-radius: 5px;
+            background: #ffffff;
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -5px;
+        }
+
+        .theme1 input[type=range]:focus::-webkit-slider-runnable-track {
+            background: #367ebd;
+        }
+
+        .theme1 input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            background: #3071a9;
+            border-radius: 1.3px;
+            border: 0.2px solid #010101;
+        }
+
+        .theme1 input[type=range]::-moz-range-thumb {
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 18px;
+            width: 18px;
+            border-radius: 5px;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .theme1 input[type=range]::-ms-track {
+            width: 100%;
+            height: 8.4px;
+            cursor: pointer;
+            background: transparent;
+            border-color: transparent;
+            color: transparent;
+        }
+
+        .theme1 input[type=range]::-ms-fill-lower {
+            background: #2a6495;
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        }
+
+        .theme1 input[type=range]::-ms-fill-upper {
+            background: #3071a9;
+            border: 0.2px solid #010101;
+            border-radius: 2.6px;
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        }
+
+        .theme1 input[type=range]::-ms-thumb {
+            box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+            border: 1px solid #000000;
+            height: 18px;
+            width: 18px;
+            border-radius: 5px;
+            background: #ffffff;
+            cursor: pointer;
+            height: 8.4px;
+        }
+
+        .theme1 input[type=range]:focus::-ms-fill-lower {
+            background: #3071a9;
+        }
+
+        .theme1 input[type=range]:focus::-ms-fill-upper {
+            background: #367ebd;
+        }
+
+
+        .theme2 #backtrackingModeBtn {
+            font-family: monospace;
+            background-color: transparent;
+            border: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgb(209 213 219);
+            font-weight: bold;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .theme2 #backtrackingModeBtn:hover {
+            background-color: rgb(243 244 246);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="overlay"></div>
+    <div id="storage">
+        <div class="storageHeader">
+            <h1>Saved Givens</h1>
+            <div title="close list of saved givens">
+                <svg id="storageClose" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Menu / Close_LG">
+                        <path id="Vector" d="M21 21L12 12M12 12L3 3M12 12L21.0001 3M12 12L3 21.0001" stroke="#000000"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+        <div id="storageEntries">
+            <div class="storageEntry unselectable">
+                <div>
+                    <span class="storageEntryTitle">Title</span>
+                    <span class="storageEntryDateTime">11. Dezember 2023</span>
+                </div>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12V17" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M14 12V17" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M6 10V18C6 19.6569 7.34315 21 9 21H15C16.6569 21 18 19.6569 18 18V10" stroke="#000000"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+
+            </div>
+            <div class="storageEntry unselectable">
+                <span class="storageEntryTitle">Title</span>
+                <span class="storageEntryDateTime">11. Dezember 2023</span>
+            </div>
+            <div class="storageEntry unselectable">
+                <span class="storageEntryTitle">Title</span>
+                <span class="storageEntryDateTime">11. Dezember 2023</span>
+            </div>
+        </div>
+
+        <div class="storageControls">
+            <button id="storageAddBtn">
+                Save Current Givens
+            </button>
+        </div>
+        <div class="storageBottomControls">
+            <button id="themeBtn">Switch Theme</button>
+        </div>
+
+
+
+    </div>
+
+    <button id="storageBtn" title="open list of saved givens">
+        <svg viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M156,56H60A20.02229,20.02229,0,0,0,40,76V228a12.00045,12.00045,0,0,0,18.97559,9.76465l49.01806-35.01758,49.03174,35.01855A12.00046,12.00046,0,0,0,176,228V76A20.02229,20.02229,0,0,0,156,56Zm-4,148.68359-37.0332-26.44921a12.00145,12.00145,0,0,0-13.94971.001L64,204.67969V80h88ZM216,36V188a12,12,0,0,1-24,0V40H92a12,12,0,0,1,0-24H196A20.02229,20.02229,0,0,1,216,36Z" />
+        </svg>
+    </button>
+
+
+
+    <main class="sud">
+        <div class="sud container">
+            <div class="sud left">
+                <div class="sud status">
+                    <div class="analyzing">
+                        <div class="lds-dual-ring"></div>
+                        <div>Analyzing...</div>
+                    </div>
+                    <div id="analyzing-status" class="unselectable">
+                        Sudoku is
+                        <span id="sud-status"></span>
+                        <span id="sud-status-backtracking-no">with only Fix-Square</span>
+                        <span id="sud-status-backtracking-jein">with Fix-Square</span>
+                        <span id="sud-status-backtracking-yes-and" title="go to backtracking-start step">and
+                            backtracking</span>
+                        <span id="sud-status-backtracking-yes" title="go to backtracking-start step">
+                            with backtracking
+                        </span>
+                    </div>
+
+
+                    <div>
+                        Current Step: <span id="currentStep">0</span> / <span id="allSteps">180</span>
+                    </div>
+                </div>
+                <div class="sud controls">
+                    <div class="sud buttons">
+                        <button id="runBtn" title="run algorithm" class="sud">
+                            <img class="unselectable " src="res/Play.png">
+                        </button>
+                        <button id="pauseBtn" title="pause algorithm" class="sud">
+                            <img class="unselectable " src="res/Pause.png">
+                        </button>
+                        <button id="backBtn" title="step backward (ArrowLeft)" class="sud">
+                            <img class="unselectable " src="res/StepBwd.png">
+                        </button>
+                        <button id="stepBtn" title="step forward (ArrowRight)" class="sud">
+                            <img class="unselectable " src="res/StepFwd.png">
+                        </button>
+                        <button id="lectureBtn" title="set lecture givens" class="sud">
+                            <img class="unselectable " src="externals/sud/assets/lecture.png">
+                        </button>
+                        <div class="inline">
+                            <button id="randomizeBtn" title="set random 17 givens (R)" class="sud">
+                                <img class="unselectable " src="res/Random.png">
+                            </button>
+                        </div>
+
+                        <button id="startBtn" title="go to beginning (ArrowDown)" class="sud">
+                            <img class="unselectable " src="res/Start.png">
+                        </button>
+                        <button id="endBtn" title="go to end (ArrowUp)" class="sud">
+                            <img class="unselectable " src="res/Finish.png">
+                        </button>
+                        <button id="clearBtn" title="clear points (C)" class="sud">
+                            <img class="unselectable " src="res/Clear.png">
+                        </button>
+                        <button title="toggle backtracking mode between fast and slow" id="backtrackingModeBtn">Fast
+                            Backtracking</button>
+                    </div>
+                    <div class="sud range">
+                        <span style="white-space: nowrap;">Run Speed:</span>
+                        <input id="speedRange" type="range" min="0" max="1" step="0.1" />
+                    </div>
+                </div>
+
+                <div class="sud game">
+                    <div>
+                        <h1>Input <span id="nGivens"></span></h1>
+                        <div id="sud-sudoku-input"></div>
+                    </div>
+                    <div>
+                        <h1>Output</h1>
+                        <div id="sud-sudoku"></div>
+                    </div>
+
+                </div>
+
+                <div class="sud status-bottom">
+                    <h1>Timeline Slider <span style="font-weight: normal;">(Interactive: Drag the slider and click on
+                            marker labels to jump.)</span></h1>
+
+                    <div id="newMarkers">
+                        <input id="stepRange" type="range" min="0" step="1" />
+                        <div class="newMarker"></div>
+                        <div class="newMarker"></div>
+                        <div class="newMarker"></div>
+                        <div class="newMarker"></div>
+                    </div>
+                    <div id="newMarkerLabels">
+                        <div class="unselectable">
+                            <div class="newMarkerCircle"></div>
+                            <span class="newMarkerLabel">Start</span> <span class="newMarkerLabelSteps"></span>
+                        </div>
+                        <div class="unselectable">
+                            <div class="newMarkerCircle"></div>
+                            <span class="newMarkerLabel">Second</span> <span class="newMarkerLabelSteps"></span>
+                        </div>
+                        <div class="unselectable">
+                            <div class="newMarkerCircle"></div>
+                            <span class="newMarkerLabel">Third</span> <span class="newMarkerLabelSteps"></span>
+                        </div>
+                        <div class="unselectable">
+                            <div class="newMarkerCircle"></div>
+                            <span class="newMarkerLabel">Solution</span> <span class="newMarkerLabelSteps"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="sud right">
+                <div class="sud groups">
+                    <div id="sud-group-counter-row" class="sud group"></div>
+                    <div id="sud-group-counter-col" class="sud group"></div>
+                    <div id="sud-group-counter-block" class="sud group"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sud container">
+            <div class="algorithm">
+                <h2>The algorithm</h2>
+                <h3 id="codeBlockTitleFixSquare">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 15L12 9L6 15" stroke="#33363F" stroke-width="2" />
+                    </svg>
+                    [PSEUDOCODE] Fix-Square
+                </h3>
+                <blockquote style="display: none;" id="codeBlockFixSquare">
+                    <pre>
+procedure Fix-Square(sq, nr)
+    Set square sq to nr
+    for all three groups G which contain sq do
+        for all nr' != nr if nr' still possible for sq do
+            reduce counter c(G, nr')
+        end for
+        for all squares sq' of G, sq' != sq do
+            remove nr from sq'
+            for all group G' != G which contains sq' do
+                reduce counter c(G', nr)
+            end for
+        end for
+    end for
+    for all sq', not fixed and only one possible number nr' do
+        Fix-Square(sq', nr')
+    end for
+    for all c(G, nr) which have been reduced to 1 do
+        search for square sq' of G which still allows nr
+        Fix-Square(sq', nr)
+    end for
+end procedure
+                    </pre>
+                </blockquote>
+                <h3 id="codeBlockTitleBacktracking">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 15L12 9L6 15" stroke="#33363F" stroke-width="2" />
+                    </svg>
+                    [PSEUDOCODE] Backtracking
+                </h3>
+                <blockquote style="display: none;" id="codeBlockBacktracking">
+                    <pre>
+procedure Backtracking(state)
+    Backup state
+    Find next empty square sq in state
+    if no empty square sq found then
+        return true
+    end if
+    for all nr still possible for sq do
+        Fix-Square(sq, nr)
+        if Backtracking(state) then
+            return true
+        end if
+        Reset state from backup
+    end for
+    return false
+end procedure
+                    </pre>
+                </blockquote>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

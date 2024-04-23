@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="externals/nim/main_style.css">
+  <link rel="stylesheet" type="text/css" href="externals/nim/style.css">
+</head>
+
+<body>
+  <div id=container>
+    <div class="borderdiv">
+      <div id="program_expand">
+        <div id="controls">
+          <!-- <div title="run algorithm" class="control-div" onclick="minimumweighttriangulation.runAlgorithm()"><img class="control unselectable" id="run" src="res/Play.png"></div>
+          <div title="pause algorithm" class="control-div" onclick="minimumweighttriangulation.pauseAlgorithm()"><img class="control unselectable" id="pause" src="res/Pause.png"></div>
+          <div title="step backward" class="control-div" onclick="minimumweighttriangulation.stepBackward()"><img class="control unselectable" id="back" src="res/StepBwd.png"></div>
+          <div title="step forward" class="control-div" onclick="minimumweighttriangulation.stepForward()"><img class="control unselectable" id="step" src="res/StepFwd.png"></div>
+          <div title="go to beginning" class="control-div" onclick="minimumweighttriangulation.stepBackFill()"><img class="control unselectable" id="start" src="res/Start.png"></div>
+          <div title="go to end" class="control-div" onclick="minimumweighttriangulation.stepFill()"><img class="control unselectable" id="end" src="res/Finish.png"></div>
+          <div title="clear points" class="control-div" onclick="minimumweighttriangulation.clearPoints()"><img class="control unselectable" id="clear" src="res/Clear.png"></div> -->
+        </div>
+        <table id="input" class="unselectable">
+          <h1>Input</h1>
+          <div class="input_container">
+            <div class="input_rules">
+              <h3>Rules</h3>
+              <div action="#" id="rules" class="rules">
+                  <div class="rule_container" key="1" data-tip="- Input should be in form: from,to;split1,split2,... &#10;- use numbers from 1 to n &#10;- INF can be used for infinity">
+                    <label class="rule_label" for="rule1">Rule 1:</label>
+                      <input class="rule" type="text" name="rule1" id="rule1" placeholder="from,to;[split]">
+                      <button class="delete-btn" id="delete-btn-1">
+                        <img src="externals/nim/delete.png" style="width: 0.75rem; height: 0.75rem;">
+                      </button>
+                  </div>
+              </div>
+              <input type="button" class="addButton" onclick="nim.addRule()" id="addRule" value="+">
+              <!-- <input type="button" class="addButton" onclick="nim.loadRules()" id="addRule" value="Load"> -->
+              
+            </div>
+            <div class="input_piles">
+              <div>
+                <h3 class="pile-heading">Piles</h3>
+                <div data-tip="Input should be in form: 1,2,3,4">
+                  <input class="piles" type="text" name="piles" id="piles" placeholder="1,2,3,...">
+                </div>
+                <input type="button" style="width:10rem;" class="addButton" onclick="{nim.loadGame()}" id="addRule" value="Reload Game">
+              </div>
+              <h3>Nimbers</h3>
+              <div id="nimbers">
+              </div>
+            </div>
+          </div>
+          <tr>
+            <!-- <td align="left" width="95">Run Speed: </td> -->
+            <!-- <td colspan = 2><input width = "247" id="speed" type="range" min="0" max="10" step="1" oninput="minimumweighttriangulation.updateSpeed(this.value)" onchange="minimumweighttriangulation.updateSpeed(this.value)"/></td> -->
+          </tr>
+        </table>
+        <div id="content" class="unselectable">
+          <h1>Play the Game</h1>
+          <div class="nim_container">
+            <div class="nim_game">
+              <div class="game" id="gameboard">
+              </div>
+            </div>
+            <div class="nim_game_info">
+              <div class="nim_gamestate" id="gamestate">
+                <h3>Game State</h3>
+                <div class="nim_gamestate_container" id="gamestate_container"></div>
+              </div>
+              <div class="nim_gamemoves">
+                <h3>Winning Moves</h3>
+                <div id="nim_winningmoves"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <!-- <div class="borderdiv" id="algo">
+      <div id="algo_title">
+        <p>
+          <b>THE ALGORITHM</b>
+        </p>
+        </div>
+      <div id="algo_expand">
+        <div id="algo_fill">
+          <div>
+            <p>
+              <input id="algo_nim_toggle" type="checkbox" onclick="toggleExpand(this, 'algo_nim_expand')">
+              <label for="algo_nim_toggle" id="algo_nim_title"><b>[PSEUDOCODE] NIM</b></label>
+            </p>
+          </div>
+            <div id="algo_nim_expand">
+              <blockquote id="fill_block">
+                <pre>
+                  TODO: here should be some documentation
+                </pre>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div class="popover popover_hidden" id="popover">
+    <div class="popover_container" id="popover_container">
+      <div id="popover_heading" ></div>
+      <div id="popover_content" ></div>
+      <div id="popover_warning" ></div>
+      <div id="popover_buttons" ></div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Animated Algorithms</title>
+  <meta name="author" content="Martin Borzan, Benjamin Rauch">
+  <meta name="description" content="A collection of animated algorithms">
+  
+  <script src="lib/jquery-3.1.1.min.js"></script>
+  <script type="text/javascript" src="externals/lcs/script.js"></script>
+  <script type="text/javascript" src="externals/chgs/script.js"></script>
+  <script type="text/javascript" src="externals/chii/script.js"></script>
+  <script type="text/javascript" src="externals/mst/script.js"></script>
+  <script type="text/javascript" src="externals/lsi/script.js"></script>
+  <script type="text/javascript" src="externals/sln/script.js"></script>
+  <script type="text/javascript" src="externals/ls/script.js"></script>
+  <script type="text/javascript" src="externals/rst/script.js"></script>
+  <script type="text/javascript" src="externals/mwt/script.js"></script>
+  <script type="text/javascript" src="externals/dst/script.js"></script> 
+  <script type="text/javascript" src="externals/rev/script.js"></script>
+  <script type="text/javascript" src="externals/abpru/script.js"></script>
+  <script type="text/javascript" src="externals/gc/script.js"></script>
+  <script type="text/javascript" src="externals/unf/script.js"></script>
+  <script type="module" src="externals/sud/script.js"></script>
+  <script type="text/javascript" src="externals/nim/script.js"></script>
+  <script type="text/javascript" src="externals/rct/script.js"></script>
+
+  <style type="text/css"> 
+    body {
+      margin: 0;
+      padding: 0;
+     }
+
+    div.container {
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+  }
+
+  #external_page {
+    background: #C5CFD6;
+    position: relative;
+      overflow: hidden;
+      min-height: 700px;
+      height: 100%;
+      width: 100%;
+      width: auto;
+  }
+
+  /* dropdown from https://www.w3schools.com/howto/howto_js_dropdown.asp */
+  /* Dropdown Button */
+  .dropbtn {
+      background-color: #58A3E3;
+      color: black;
+      padding: 16px;
+      font-size: 32px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;      
+      display: block;
+      width: 100%;
+  }
+
+  /* Dropdown button on hover & focus */
+  .dropbtn:hover, .dropbtn:focus {
+      background-color: #4480b3;
+  }
+
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+  }
+
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #87AECF;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 9999;
+      width: 100%;
+  }
+
+  /* buttons inside the dropdown */
+  .dropdown-content button {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      background-color: #87AECF;
+      color: black;
+      font-size: 24px;
+      text-transform: uppercase;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;      
+      display: block;
+      width: 100%;
+  }
+
+  /* Change color of dropdown links on hover */
+  .dropdown-content button:hover {background-color: #58A3E3}
+
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {display:block;}
+
+  button > img{
+    vertical-align: middle;
+    align: right;
+  }
+  </style>
+
+  <script type="text/javascript">
+    var algorithms = [];
+    var activeAlgoIndex = 0;
+    var algorithm;
+
+    function load() {
+
+      var div = document.getElementById("script");
+      div.parentNode.removeChild(div);
+
+      algorithms.push({algo: 0, url: 'externals/abpru/webpage.html', text: 'Alpha Beta Pruning/Minmax'})
+      algorithms.push({algo: 1, url: 'externals/chgs/webpage.html', text: 'Convex Hull Graham Scan'})
+      algorithms.push({algo: 2, url: 'externals/chii/webpage.html', text: 'Convex Hull Iterative Insert'})
+      algorithms.push({algo: 3, url: 'externals/dst/webpage.html', text: 'Dijkstra\'s Shortest Path'})
+      algorithms.push({algo: 4, url: 'externals/gc/webpage.html', text: 'Gray Codes'}) 
+      algorithms.push({algo: 5, url: 'externals/lsi/webpage.html', text: 'Line Segment Intersections'})
+      algorithms.push({algo: 6, url: 'externals/lcs/webpage.html', text: 'Longest Common Subsequence'})
+      algorithms.push({algo: 7, url: 'externals/ls/webpage.html', text: 'Maximum Subarray Sum'})
+      algorithms.push({algo: 8, url: 'externals/sln/webpage.html', text: 'Maximum Subarray Sum (Scanline)'})   
+      algorithms.push({algo: 9, url: 'externals/mst/webpage.html', text: 'Minimal Spanning Tree'})
+      algorithms.push({algo:10, url: 'externals/mwt/webpage.html', text: 'Minimum Weight Triangulation'})
+      algorithms.push({algo:11, url: 'externals/rst/webpage.html', text: 'Random Search Tree'})
+      algorithms.push({algo:12, url: 'externals/rev/webpage.html', text: 'Reverse Search'})
+      algorithms.push({algo:13, url: 'externals/sud/webpage.html', text: 'Sudoku'})
+      algorithms.push({algo:14, url: 'externals/unf/webpage.html', text: 'Union Find'})
+      algorithms.push({algo:15, url: 'externals/nim/webpage.html', text: 'NIM'})
+      algorithms.push({algo:16, url: 'externals/rct/webpage.html', text: 'Random Color Trial'})
+
+
+
+      loadExternalHTML(activeAlgoIndex)
+    }
+    function loadAlgorithm(algoNum) {
+      switch(algoNum) {
+            case 0:
+              return alphaBetaPruning; 
+            case 1:
+              return grahamHull;
+            case 2:
+              return iterativeHull;
+            case 3:
+              return dijkstra;
+            case 4:
+              return grayCodes;
+            case 5:
+              return lineIntersections;
+            case 6:
+              return commonSubsequence;
+            case 7:
+              return largestSum;
+            case 8:
+              return scanline;
+            case 9:
+              return spanningTree;
+            case 10:
+              return minimumweighttriangulation;
+            case 11:
+              return randomSearchTree;
+            case 12:
+              return reverseSearch;
+	    case 13:
+	      return sudoku;
+            case 14:
+              return unionFind;
+	    case 15:
+	      return nim;
+            case 16:
+              return randomColorTrial;
+         default:
+              return null
+      }
+    }
+
+    function loadPage(html_target, algoNum) {
+      $("#external_page").load(html_target, 
+      function (responseText, textStatus, XMLHttpRequest) {
+        if (textStatus == "success") {
+            $("#external_page").html(responseText)
+            algorithm = undefined;
+            algorithm = loadAlgorithm(algoNum);
+            algorithm.active = true
+            algorithm.initialize()
+        }
+        if (textStatus == "error") {
+            alert("AN ERROR OCCURED WHILE LOADING THE ALGORITHM")
+        }
+      });
+    }
+
+    function loadExternalHTML(algoInfoIndex) {
+      var algoInfo = algorithms[algoInfoIndex]
+      var oldButton = document.getElementById(+activeAlgoIndex);
+      oldButton.style["display"] = "block";
+
+      activeAlgoIndex = algoInfoIndex
+
+      var headerButton = document.getElementById("headerButton");
+      headerButton.innerHTML = algoInfo.text;
+
+      if(algoInfo.url !== null) loadPage(algoInfo.url, algoInfo.algo);
+    }
+
+    function toggleExpand(checkbox, divname) {
+      if(checkbox.checked) {
+        document.getElementById(divname).style.maxHeight = "2000px";
+      } else {
+        document.getElementById(divname).style.maxHeight = "0px";
+      }
+    }
+    
+    //dropdown from https://www.w3schools.com/howto/howto_js_dropdown.asp
+    function showDropDown() {
+      var algodiv = document.getElementById("dropdownContentDiv");
+      //uncomment to hide current algorithm button
+      //var currentButton = document.getElementById(+activeAlgoIndex);
+      //currentButton.style["display"] = "none";
+
+      algodiv.classList.toggle("show");
+    }
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!$(event.target).hasClass('dropbtn') && !$(event.target).hasClass('droparrow')) {
+
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+  </script>
+
+  </head>
+  <body onload="load()">
+  <div class="container">
+    <div class="dropdown">
+      <button id="headerButton" onclick="showDropDown()" class="dropbtn"></button>
+      <img src="res/DownArrow.png" onclick="showDropDown()" class="droparrow" height="35px" width="35px" align="right" style="margin: -50px 20px 0 0">
+      <div id="dropdownContentDiv" class="dropdown-content">
+        <button id="0" onclick="loadExternalHTML(0)">Alpha Beta Pruning/Minmax</button>
+        <button id="1" onclick="loadExternalHTML(1)">Convex Hull Graham Scan</button>
+        <button id="2" onclick="loadExternalHTML(2)">Convex Hull Iterative Insert</button>
+        <button id="3" onclick="loadExternalHTML(3)">Dijkstra's Shortest Path</button>
+        <button id="4" onclick="loadExternalHTML(4)">Gray Codes</button>
+        <button id="5" onclick="loadExternalHTML(5)">Line Segment Intersections</button>
+        <button id="6" onclick="loadExternalHTML(6)">Longest Common Subsequence</button>
+        <button id="7" onclick="loadExternalHTML(7)">Maximum Subarray Sum</button>
+        <button id="8" onclick="loadExternalHTML(8)">Maximum Subarray Sum (Scanline)</button>
+        <button id="9" onclick="loadExternalHTML(9)">Minimal Spanning Tree</button>
+        <button id="10" onclick="loadExternalHTML(10)">Minimum Weight Triangulation</button>
+	<button id="15" onclick="loadExternalHTML(15)">NIM</button>
+        <button id="16" onclick="loadExternalHTML(16)">Random Color Trial</button>        
+        <button id="11" onclick="loadExternalHTML(11)">Random Search Tree</button>
+        <button id="12" onclick="loadExternalHTML(12)">Reverse Search</button>
+        <button id="13" onclick="loadExternalHTML(13)">Sudoku</button>
+        <button id="14" onclick="loadExternalHTML(14)">Union Find</button>
+	<button id="15" onclick="loadExternalHTML(15)">ASTAR</button>
+      </div>
+    </div>
+    <div id="script">
+      <p>This page needs JavaScript enabled to work.</p>
+    </div>
+    <div id="external_page">
+    </div>
+  </div>
+    <br>
+  <div id="bottom_box" style="max-width: 50%; margin: 0 auto; text-align=“justify“;">
+<p style="text-align: justify">
+	  <i>
+          All animated algorithms have been implemented in the course of bachelor projects under the supervision of Oswin Aichholzer. They are intended to support the algorithm courses given at Graz University of Technology.
+          Disclaimer: The algorithms have been carefully implemented, but there is no guarantee that they are correct in all details. So always use them with a healthy portion of critical curiosity.
+If you encounter any unexpected behavior please consult the course material (slides and videos). If you cannot resolve the problem, then please contact your TAs or lecturers.
+  </i>
+</p>
+  </div>
+
+  </body>
+</html>

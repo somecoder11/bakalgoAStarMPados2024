@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <script src="externals/rct/plotly-2.24.1.min.js" charset="utf-8"></script>
+  <style>
+    #content_right {
+      width: 600px;
+      height: 800px;
+    }
+
+    #wrapper {
+      margin: 10px;
+        border: 8px solid black;
+        padding: 10px;
+    }
+
+    #wrapper_left {
+    }
+
+    #wrapper_right {
+      overflow: auto;
+      width: 40%;
+      height: 80%;
+    }
+
+    .borderdiv {
+      display: inline-block;
+      margin: 10px;
+        border: 8px solid black;
+        padding: 10px;
+    }
+
+    .borderdiv_no_border {
+      display: inline-block;
+      margin: 10px;
+        padding: 10px;
+    }
+
+    #statistics_div {
+      width: 80%;
+    }
+
+    #container {
+      width: 95%;
+      text-align: center;
+      margin: 30px auto;
+    }
+
+    #controls {
+      display: inline-block;
+      margin: 0 auto;
+      padding: 0px;
+    }
+
+    .control-div {
+      display: flex;
+        align-items: center;
+      /*margin-bottom: 10px;*/
+      float: left;
+      margin-right: 8px;
+      border-radius: 8px;
+      height: 40px;
+      width: 40px;
+      background-color: #87AECF;
+    }
+
+    .control-div:hover {
+      background-color: #4480b3;
+    }
+
+    .control {
+      height: 25px;
+      width: 25px;
+      margin: 0 auto;
+    }
+
+    .unselectable {
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .wide_control {
+      width: 70px;
+    }
+
+    #input {
+      margin: 0 auto;
+      padding: 0px;
+    }
+
+    #content {
+      margin: 0 auto;
+      padding: 5px;
+    }
+
+    #footer {
+      margin: 0 auto;
+      padding: 5px;
+    }
+
+    #info, #algo_title, #algo_randomColorTrial {
+      font: 14pt JosefinSlab;
+      margin: auto;
+    }
+
+    #length {
+      width: 50%;
+      margin: auto;
+      float: left;
+      font: 12pt JosefinSlab;
+    }
+
+    #sequence {
+      width: 50%;
+      float: right;
+      text-align: center;
+      font: 12pt JosefinSlab;
+    }
+
+    #length_header, #sequence_header {
+      font-weight: bold;
+    }
+
+    #algo_randomColorTrial {
+      margin-left: 30px;
+      text-align: left;
+    }
+
+    #randomColorTrial_block {
+      color: black;
+      font: 12pt Consolas;
+    }
+
+    #algo_randomColorTrial_expand {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s;
+    }
+
+
+    input[type="checkbox"] {
+      display: none;
+    }
+
+    input[type="checkbox"] + label:hover {
+      color: #555555;
+    }
+
+    input[type="checkbox"] + label:before {
+      content: "\25E5";
+      margin-right: 10px;
+    }
+
+    input[type="checkbox"]:checked + label:before {
+      content: "\25E2";
+      margin-right: 10px;
+    }
+
+    ul {
+        list-style-type: none;
+        color: black;
+    }
+
+    table {
+      width: 352px;
+      margin-left: 30px;
+    }
+
+    body {
+      margin: 0 auto;
+    }
+
+    /* slider styling from http://danielstern.ca/range.css/?ref=css-tricks#/ */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      margin: 4.8px 0;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: #3071a9;
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -5px;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      background: #367ebd;
+    }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      background: #3071a9;
+      border-radius: 1.3px;
+      border: 0.2px solid #010101;
+    }
+    input[type=range]::-moz-range-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+    }
+    input[type=range]::-ms-track {
+      width: 100%;
+      height: 8.4px;
+      cursor: pointer;
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
+    input[type=range]::-ms-fill-lower {
+      background: #2a6495;
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+    input[type=range]::-ms-fill-upper {
+      background: #3071a9;
+      border: 0.2px solid #010101;
+      border-radius: 2.6px;
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+    }
+    input[type=range]::-ms-thumb {
+      box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      border: 1px solid #000000;
+      height: 18px;
+      width: 18px;
+      border-radius: 5px;
+      background: #ffffff;
+      cursor: pointer;
+      height: 8.4px;
+    }
+    input[type=range]:focus::-ms-fill-lower {
+      background: #3071a9;
+    }
+    input[type=range]:focus::-ms-fill-upper {
+      background: #367ebd;
+    }
+    .examples {
+      margin: auto;
+      padding-bottom: 15px;
+      padding-left: 25px;
+      text-align: left;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id=container>
+    <div id="wrapper">
+      <div class="borderdiv_no_border" id="wrapper_left">
+        <div id="program_expand">
+          <div id="controls">
+            <div title="run algorithm" class="control-div" onclick="randomColorTrial.runAlgorithm()"><img class="control unselectable" id="run" src="res/Play.png"></div>
+            <div title="pause algorithm" class="control-div" onclick="randomColorTrial.pauseAlgorithm()"><img class="control unselectable" id="pause" src="res/Pause.png"></div>
+            <div title="step backward" class="control-div" onclick="randomColorTrial.stepBackward()"><img class="control unselectable" id="back" src="res/StepBwd.png"></div>
+            <div title="step forward" class="control-div" onclick="randomColorTrial.stepForward()"><img class="control unselectable" id="step" src="res/StepFwd.png"></div>
+            <div title="go to beginning" class="control-div" onclick="randomColorTrial.resetRandomColorTrial()"><img class="control unselectable" id="start" src="res/Start.png"></div>
+            <div title="go to end" class="control-div" onclick="randomColorTrial.finishRandomColorTrial()"><img class="control unselectable" id="end" src="res/Finish.png"></div>
+            <div title="clear points" class="control-div" onclick="randomColorTrial.clearRandomColorTrial()"><img class="control unselectable" id="clear" src="res/Clear.png"></div>
+          </div>
+          <table id="input" class="unselectable">
+            <tr>
+              <td align="left" width="95">Run Speed: </td>
+              <td colspan=2><input width = "247" id="speed" type="range" min="0" max="10" step="1" oninput="randomColorTrial.updateSpeed(this.value)" onchange="randomColorTrial.updateSpeed(this.value)"/></td>
+            </tr>
+            <tr>
+              <td align="left" width="120">Color/Number Mode: </td>
+              <td align="left"><button id="draw-mode-btn" type="button" onclick="randomColorTrial.updateDrawMode(this)" value="true">Colorblind Mode</button>
+              <div style="display: inline-block;" title="Colorblind Mode is mandatory when there are more than 26 vertices">&#9432;</div></td>
+            </tr>
+            <tr>
+              <td align="left" width="120">Click Point: </td>
+              <td align="left"><button id="draw-policy-btn" type="button" onclick="randomColorTrial.updateDrawingPolicy(this)" value="0">Draw / Move Point</button></td>
+            </tr>
+          </table>
+          <div id="content" class="unselectable"> 
+          </div>
+          <div class="examples">
+            Small Examples:
+            <button onclick="randomColorTrial.loadExampleStateBasic()">Basic</button>
+            <button onclick="randomColorTrial.loadExampleStateSparse()">Sparse</button>
+            <button onclick="randomColorTrial.loadExampleStateCircle()">Circle</button>
+            <br>
+            Larger Examples:
+            <button onclick="randomColorTrial.loadExampleStateComplete()">Complete</button>
+          </div>
+          <div>
+            Change number of available colors:
+            <button onclick="randomColorTrial.changeAvailableColors(true)">&lt;</button>
+            <button onclick="randomColorTrial.changeAvailableColors(false)">&gt;</button>
+            <button onclick="randomColorTrial.resetAvailableColors()">Reset to Delta + 1</button>
+            <button onclick="randomColorTrial.setDegBool()">Set to deg(v) + 1</button>
+          </div>
+          <div style="white-space: nowrap;">
+            Remember Random Choices:
+            <button onclick="randomColorTrial.toggleRememberRandomChoices(this)">Disabled</button>
+            <div style="display: inline-block;" title="When this feature is left at disabled, the algorithm will reroll random choices, when you go back and forth. By enabling it, the algorithm will not reroll but remember choices already made.">&#9432;</div>
+          </div>
+          <div id="info">
+            
+          </div>
+        </div>
+      </div>
+      <div class="borderdiv_no_border" id="wrapper_right">
+        <div id="content_right" class="unselectable">
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="borderdiv" id="statistics_div">
+      !!! Too large graphs might lead to your browser crashing. There is no limit set to protect you. !!!
+      <br><br>
+      <label for="statistics-graph-type">Graph Type: </label>
+      <button id="statistics-graph-type" type="button" onclick="randomColorTrial.statisticsToggleGraphType(this)" value="0">Edgar Gilbert Random Graph</button>
+      <div style="display: inline-block;" title="GILBERT, Edgar N. Random graphs. The Annals of Mathematical Statistics, 1959, 30. Jg., Nr. 4, S. 1141-1144.">&#9432;</div>
+      <div style="display: inline-block;" title="FISCHER, Manuela; HALLDÓRSSON, Magnús M.; MAUS, Yannic. Fast Distributed Brooks' Theorem. In: Proceedings of the 2023 Annual ACM-SIAM Symposium on Discrete Algorithms (SODA). Society for Industrial and Applied Mathematics, 2023. S. 2567-2588.">&#9432;</div>
+      <br>
+      <label for="statistics_num_vertices">Number of vertices: </label>
+      <input type="number" id="statistics_num_vertices" value="200">
+      <button id="statistics-toggle-available-colors-len" type="button" onclick="randomColorTrial.statisticsToggleAvailableColorsLen(this)" value="true">Change to Delta colors</button>
+      <br>
+      <label for="statistics_percentage_edge">Percentage for each edge (between 0 and 100): </label>
+      <input type="number" id="statistics_percentage_edge" value="80">
+      <br>
+      <label for="statistics_num_runs">How many times should the algorithm run: </label>
+      <input type="number" id="statistics_num_runs" value="50">
+      <br>
+      <button id="statistics-generate-btn" type="button" onclick="randomColorTrial.statisticsGenerate()">Generate</button>
+      <p id="statistics-generate-text"></p>
+      <br>
+      <div id="statistics-delta-plus-one-info"></div>
+      <label for="statistics_num_colors">How many colors should be used: </label>
+      <input type="number" id="statistics_num_colors">
+      <div style="display: inline-block;" title="When far less than than Delta + 1 colors are used and it is not possible to color the graph, it becomes very unlikely for the website to realize that coloring is not possible. Thus, the algorithm just keeps on running. Just abort in that case.">&#9432;</div>
+      <br>
+      <button id="statistics-run-btn" type="button" onclick="randomColorTrial.statisticsRun()">Run</button>
+      <button id="statistics-stop-btn" type="button" onclick="randomColorTrial.statisticsStop()">Abort</button>
+      <p id="statistics-run-text"></p>
+      <label for="statistics-run-progress">Algorithm progress:</label>
+      <progress id="statistics-run-progress" max="100" value="0"></progress>
+      <div id="statistics-plot"></div>
+    </div>
+    <br>
+    <div class="borderdiv" id="algo">
+      <div id="algo_title">
+        <p><b>THE ALGORITHM</b></p>
+        </div>
+      <div id="algo_expand">
+        <div id="algo_randomColorTrial">
+          <div>
+            <p><input id="algo_randomColorTrial_toggle" type="checkbox" onclick="toggleExpand(this, 'algo_randomColorTrial_expand')">
+              <label for="algo_randomColorTrial_toggle" id="algo_randomColorTrial_title"><b>[PSEUDOCODE] RandomColorTrial:</b></label></p>
+            </div>
+            <div id="algo_randomColorTrial_expand">
+<blockquote id="randomColorTrial_block"><pre>
+
+(Each uncolored vertex does the following steps in each communication round)
+(Colored vertices do nothing.
+Thus, the algorithm is finished when every vertex is colored)
+
+available_colors // the palette of remaining colors
+                    from which the vertex can still choose - an array
+
+RAND_INT // a random integer, newly chosen in every communication round:
+            0 <= RAND_INT < available_colors.length
+
+color = available_colors[RAND_INT]
+
+Send 'color' to every neighbor
+
+Receive the random color from each uncolored neighbor
+neighbor_random_colors // array containing the random color
+                          from each uncolored neighbor
+
+if ('color' is not an element in 'neighbor_random_colors')
+{
+  Fix 'color'
+  Inform every neighbor that you have fixed your color
+}
+else
+{
+  Get informed from every neighbor that has fixed his color
+  and remove these colors from 'available_colors'
+}
+</pre></blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

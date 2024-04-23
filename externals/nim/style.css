@@ -1,0 +1,662 @@
+.borderdiv {
+  display: inline-block;
+  margin: 0 auto;
+  border: 8px solid black;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 70vw;
+}
+
+@media screen and (max-width:1024px) {
+  .borderdiv {
+    width: 90vw;
+  }
+}
+
+#container {
+  width: 95%;
+  text-align: center;
+  margin: 30px auto;
+}
+
+#controls {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 0px;
+
+  user-drag: none; 
+}
+
+.control-div {
+  display: flex;
+    align-items: center;
+  /*margin-bottom: 10px;*/
+  float: left;
+  margin-right: 8px;
+  border-radius: 8px;
+  height: 40px;
+  width: 40px;
+  background-color: #87AECF;
+}
+
+.control-div:hover {
+  background-color: #4480b3;
+}
+
+.control {
+  height: 25px;
+  width: 25px;
+  margin: 0 auto;
+}
+
+.unselectable {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.wide_control {
+  width: 70px;
+}
+
+#input {
+  margin: 0 auto;
+  padding: 0px;
+}
+
+#content {
+  margin: 0 auto;
+}
+
+#footer {
+  margin: 0 auto;
+  padding: 5px;
+}
+
+#info, #algo_title, #algo_fill, #algo_find {
+  font: 14pt JosefinSlab;
+  margin: auto;
+}
+
+#length {
+  width: 50%;
+  margin: auto;
+  float: left;
+  font: 12pt JosefinSlab;
+}
+
+#sequence {
+  width: 50%;
+  float: right;
+  text-align: center;
+  font: 12pt JosefinSlab;
+}
+
+#length_header, #sequence_header {
+  font-weight: bold;
+}
+
+#algo_fill, #algo_find {
+  margin-left: 30px;
+  text-align: left;
+}
+
+#fill_block {
+  color: black;
+  font: 12pt Consolas;
+}
+
+#find_block {
+  color: black;
+  font: 12pt Consolas;
+}
+
+#algo_find {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#algo_nim_expand, #algo_nim_expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"] + label:hover {
+  color: #555555;
+}
+
+input[type="checkbox"] + label:before {
+  content: "\25E5";
+  margin-right: 10px;
+}
+
+input[type="checkbox"]:checked + label:before {
+  content: "\25E2";
+  margin-right: 10px;
+}
+
+ul {
+    list-style-type: none;
+    color: black;
+}
+
+body {
+  margin: 0 auto;
+}
+
+/* slider styling from http://danielstern.ca/range.css/?ref=css-tricks#/ */
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  margin: 4.8px 0;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 18px;
+  width: 18px;
+  border-radius: 5px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #367ebd;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+  border-radius: 1.3px;
+  border: 0.2px solid #010101;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 18px;
+  width: 18px;
+  border-radius: 5px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 8.4px
+;      cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #2a6495;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range]::-ms-fill-upper {
+  background: #3071a9;
+  border: 0.2px solid #010101;
+  border-radius: 2.6px;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  border: 1px solid #000000;
+  height: 18px;
+  width: 18px;
+  border-radius: 5px;
+  background: #ffffff;
+  cursor: pointer;
+  height: 8.4px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #3071a9;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #367ebd;
+}
+
+/* begin new style */
+
+.input_container {
+  box-sizing: border-box;
+  min-height: 15rem;
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input_rules {
+  width: 50%;
+  top: 0;
+  bottom: 0;
+  background-color: #55555533;
+  display: inline-block;
+  
+  border-radius: 0.5rem;
+}
+
+.input_piles {
+  width: 50%;
+  /* min-width: 29rem; */
+  top: 0;
+  bottom: 0;
+  background-color: #55555533;
+
+  display: inline-block;
+  border-radius: 0.5rem;
+}
+
+@media screen and (max-width:1024px) {
+  .input_container {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .input_rules {
+    width: 100%;
+  }
+  
+  .input_piles {
+    width: 100%;
+  } 
+}
+
+.rule_col {
+  display: inline-block;
+  margin: 0 1rem;
+}
+
+#nimbers {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+
+
+.nim_container {
+  /* width: 70vw; */
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nim_game {
+  min-height: 31rem;
+  border-radius: 0.5rem;
+  background-color: #55555533;
+  flex-grow: 4;
+  position: relative;
+}
+
+.nim_game_info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+}
+
+.nim_gamestate {
+  border-radius: 0.5rem;
+  background-color: #55555533;
+  flex-grow: 2;
+}
+
+.nim_gamemoves {
+  border-radius: 0.5rem;
+  background-color: #55555533;
+  flex-grow: 1;
+}
+
+@media screen and (max-width:1024px) {
+  .nim_container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nim_game {
+    flex-grow: 4;
+  }
+  
+  .nim_game_info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    min-height: 10rem;
+  }
+  
+  .nim_gamestate {
+    flex-grow: 2;
+  }
+  
+  .nim_gamemoves {
+    flex-grow: 1;
+  }
+}
+
+@media screen and (max-width:576px) {
+  .nim_game_info {
+    flex-direction: column;
+  }
+  .borderdiv {
+    border: none;
+  }
+}
+
+h3 {
+  text-align: left;
+  margin: 0;
+  padding: 1rem 1rem;
+  padding-bottom: 0;
+}
+
+.rule_container {
+  margin: 0.5rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  
+}
+
+.delete-btn {
+  width: 2rem;
+  height: 2rem;
+
+}
+
+.rule_label {
+  width: 3.5rem;
+  margin: 0.2rem 0 0 0;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 1.5rem;
+  
+}
+
+.rule, .popover_input {
+  margin: 0 1rem;
+  padding: 0;
+  box-sizing: border-box;
+  
+  width: 65%;
+  line-height: 1.5rem;
+  
+}
+
+.pile-heading {
+  display: inline;
+}
+.piles {
+  margin: 0.5rem;
+  padding: 0;
+  box-sizing: border-box;
+  
+  width: 65%;
+  min-width: 5rem;
+  line-height: 1.5rem;
+  display: inline-block;
+}
+
+.pile_height {
+  height: 1rem;
+}
+
+.pile_height:hover {
+  margin-bottom: 0.25rem;
+  color: grey;
+  background-color: lightgray;
+  border-radius: 0.25rem;
+}
+
+.plus-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: gray;
+}
+
+.delete-icon {
+  width: 1rem;
+  height: 1rem;
+  fill: red;
+  rotate: 45deg;
+}
+
+.addButton {
+  color: white;
+  margin: 0.5rem;
+  background-color: #ccc;
+  width: 5rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.addButton:hover {
+  background-color: #eee;
+  color: gray;
+}
+
+.game {
+  flex-direction: row;
+  bottom: 0;
+  position: absolute;
+
+  width: 100%;
+  
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pile_wrapper {
+  flex-grow: 2;
+  flex-shrink: 3;
+  max-width: 3rem;
+  min-width: 1rem;
+}
+
+#nim_winningmoves {
+  max-height: 25rem;
+  overflow: scroll;
+}
+
+.stone {
+  border-radius: 0.25rem;
+  background-color: gray;
+  margin: 0.2rem 0.1rem;
+  height: 1rem;
+}
+
+.stone::before, .stone::after {
+  height: 1.5rem;
+}
+
+.stone:hover {
+  margin-bottom: 0.5rem;
+}
+
+
+.popover {
+  background-color: #00000099;
+  position: fixed;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+
+  top:0;
+  left:0;
+}
+
+.popover_container {
+  margin: 10rem auto;
+  padding: 2rem;
+  width: 30rem;
+  min-height: 10rem;
+  
+  background-color: #ddd;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 3rem #000000;
+  text-align: center;
+}
+
+.popover_hidden {
+  display: none;
+}
+
+.info_box {
+  background-color: #ccc;
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+  border-radius: 0.5rem;
+}
+
+.btn {
+  color: #222;
+  margin: auto;
+  background-color: #fff;
+  width: 4rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 1;
+  font-weight: 600;
+  display: block;
+  margin-top: 1rem;
+}
+
+.option_btn {
+  display: inline-block;
+}
+
+.popover_info_piles {
+  margin-top: 1rem;
+}
+
+.warning_box {
+  background-color: #ffff00aa;
+
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+#popover_buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#popover_content {
+  background-color: #ccc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+table {
+  border-collapse: collapse;
+  width: 80%;
+  margin: auto;
+  margin-top: 1rem;
+}
+.table_cell_pile_name {
+  text-align: center;
+  width: 7rem;
+  font-weight: bold;
+}
+
+.table_cell_nimber {
+  text-align: center;
+  width: 3rem;
+}
+
+.table_cell_nimber_binary {
+  text-align: right;
+  letter-spacing: 0.75rem;
+}
+
+.total_row {
+  border-top: 1px solid black;
+}
+
+.content_info {
+  margin: 0.5rem;
+}
+
+.pile_form {
+  margin: 0.25rem;
+}
+
+
+/* INFO BOX SOURCE: https://stackoverflow.com/questions/19480010/adding-a-tooltip-to-an-input-box */
+[data-tip] {
+	position:relative;
+
+}
+[data-tip]:before {
+	content:'';
+	/* hides the tooltip when not hovered */
+	display:none;
+	content:'';
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-bottom: 5px solid #1a1a1a;	
+	position:absolute;
+	top:35px;
+	right:150px;
+	z-index:8;
+	font-size:0;
+	line-height:0;
+	width:0;
+	height:0;
+}
+[data-tip]:after {
+	display:none;
+	content:attr(data-tip);
+	position:absolute;
+	top:40px;
+	right:30px;
+	padding:5px 8px;
+	background:#1a1a1a;
+	color:#fff;
+	z-index:9;
+	font-size: 0.75em;
+	/* height:18px; */
+	line-height:18px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	/* white-space:nowrap; */
+	word-wrap:normal;
+  white-space: pre-wrap;
+  text-align: left;
+}
+[data-tip]:hover:before,
+[data-tip]:hover:after {
+	display:block;
+}
