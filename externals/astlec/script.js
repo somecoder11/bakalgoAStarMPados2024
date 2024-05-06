@@ -93,8 +93,47 @@ function addRandomVerticesEdges(vertices, edges, numVertices)
     vertices[startVertexIndex].setStart();
     vertices[destVertexIndex].isDest = true;
     return {start: vertices[startVertexIndex], dest: vertices[destVertexIndex]};
+
 }
-function as(vertices, start, dest){
+function as(start, dest){
+    let pq = [];
+    // add start to priority queue
+    pq.push(start);
+    let currentNode = start;
+
+    // while pq not empty or dest found
+    while(pq.length !== 0 ) {
+        // take the first element in the pq (delete it from the queue and save it to currentnode)
+        let indexWithMinValue = pq.reduce((minIndex, item, index, array) => {
+            return item.totalCost < array[minIndex].totalCost ? index : minIndex;
+        }, 0);
+        currentNode = pq[indexWithMinValue];
+        pq.splice(indexWithMinValue, 1);
+        if (currentNode.isDest) {
+            break;
+        }
+        // for outgoing edge from current node
+        currentNode.outgoingEdges.forEach(edge => {
+            // calculate the weight (euclidian distance to end node) of the checked node
+            edge.to.euclidToDest = edge.euclidToDest(dest); //maybe unneccecary to preform multiple times
+            // calculate the distance of reaching the node from start node (current node distanceToStart + distance current node - checked node) and total distance
+            let currentDistance = currentNode.shortestDistanceToStartVertex + edge.distance;
+
+            // if distance in checked node is lower than previous distance,
+            if( currentDistance < edge.to.shortestDistanceToStartVertex) {
+                // add checked node to priority queue
+                edge.to.shortestDistanceToStartVertex = currentDistance;
+                // set checked nodes parent node to current node
+                edge.to.shortestParentToStartVertex = currentNode;
+                edge.to.totalCost = edge.to.shortestDistanceToStartVertex + edge.to.euclidToDest; //create internal function for this?
+                pq.push(edge.to);
+            }
+
+        })
+    }
+
+
+
     let currentVertex = start;
     while(vertices.some(vertex => vertex.isVisited === false) || currentVertex.isDest === true)
     {
@@ -150,7 +189,7 @@ function main() {
 
 main();
 
-
+// wrong algorithm, for now I want to leave it here because it inspiries me and I want to think about it later
 //do while non visited edge exists or destination is reached
     // check one ring neighbourhood of current vertex
         // calculate the distance to start vertex by startdistance of parent vortex + distsance euclidian distance to parent
@@ -159,4 +198,16 @@ main();
             // if total distance of checked vertex is shorter than total distance of parents next vertex, or parents next vertex is null, set parents next vertex to checked vertex.
     // set parent vertex in current vertex next vertex to current vertex
     // set current vertex to current vertexes next vertex
+
+
+// add start to priority queue
+// while pq not empty or dest found
+    // take the first element in the pq (delete it from the que and save it to currentnode)
+    // for outgoing edge from current node
+        // calculate the weight (euclidian distance to end node) of the checked node
+        // calculate the distance of reaching the node from start node (current node distanceToStart + distance current node - checked node) and total distance
+        // if distance in checked node is lower than previous distance,
+            // add checked node to priority queue
+            // set checked nodes parent node to current node
+    // set node with lowest total distance value to current node
 
